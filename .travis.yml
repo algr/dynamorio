@@ -34,7 +34,7 @@ notifications:
   email:
     # This overrides the default of sending to the committer and author.
     recipients:
-      - dynamorio-devs@googlegroups.com
+      - algrant@acm.org
     on_success: change
     on_failure: always
 
@@ -101,6 +101,7 @@ jobs:
 # For C/C++ there is no default install, so we set "install", not "before_install".
 install:
   - uname -a
+  - uname -m
   # FIXME: remove the "brew update" step once Travis fixes their Mac VM's
   # on 11/15/17.  Xref https://github.com/travis-ci/travis-ci/issues/8552.
   - if [[ "`uname`" == "Darwin" ]]; then brew update; brew install nasm; fi
@@ -110,7 +111,7 @@ install:
       sudo apt-get -y install ghostscript doxygen transfig vera++ cmake zlib1g-dev libsnappy-dev; fi
   # Install multilib for non-cross-compiling Linux builds:
   - >
-      if [[ "`uname`" == "Linux" && $DYNAMORIO_CROSS_AARCHXX_LINUX_ONLY == no ]]; then
+      if [[ "`uname`" == "Linux" && "`uname -m`" == "x86_64" && $DYNAMORIO_CROSS_AARCHXX_LINUX_ONLY == no ]]; then
       sudo apt-get -y install g++-multilib; fi
   # Install cross-compilers for cross-compiling Linux build:
   - >
@@ -142,7 +143,7 @@ script:
 # builds on Travis (i#2861).
 before_deploy:
   - git config --local user.name "Travis Auto-Tag"
-  - git config --local user.email "dynamorio-devs@googlegroups.com"
+  - git config --local user.email "algrant@acm.org"
   # XXX: for now we duplicate this version number here with CMakeLists.txt.
   # We should find a way to share (xref i#1565).
   # We support setting TAG_SUFFIX on triggered builds so we can have
@@ -161,6 +162,6 @@ deploy:
   # This body is clobbered by Appveyor.
   body: "Auto-generated periodic build (Travis build $TRAVIS_BUILD_NUMBER).  Unlike official release builds, Dr. Memory is not included in this build, and i686 is separated from x86_64 rather than combined in one package."
   on:
-    repo: DynamoRIO/dynamorio
+    repo: algr/dynamorio
     branch: master
     condition: $TRAVIS_EVENT_TYPE = cron && $DEPLOY = yes
