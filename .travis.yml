@@ -62,6 +62,11 @@ jobs:
     - os: linux
       compiler: gcc
       env: DYNAMORIO_CROSS_AARCHXX_LINUX_ONLY=no DEPLOY=yes EXTRA_ARGS="64_only package"
+    # 64-bit native AArch64 Linux build with gcc and run tests:
+    - os: linux
+      compiler: gcc
+      arch: arm64
+      env: DYNAMORIO_CROSS_AARCHXX_LINUX_ONLY=no DEPLOY=yes EXTRA_ARGS="64_only package"
     # AArchXX cross-compile with gcc, no tests:
     - os: linux
       compiler: gcc
